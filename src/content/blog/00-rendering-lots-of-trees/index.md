@@ -1,7 +1,7 @@
 ---
 title: "My plan to render 1 million trees"
 description: "Using the Godot game engine to render trees. A lot of trees."
-date: "2024-10-08"
+date: "2024-08-10"
 ---
 
 ---
