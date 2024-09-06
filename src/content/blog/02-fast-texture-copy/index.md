@@ -57,6 +57,14 @@ rd.texture_copy(in_texture, out_texture, Vector3.ZERO, Vector3.ZERO, Vector3(ima
 # Create a texture that can be applied to a sprite.
 var sprite_tex = Texture2DRD.new()
 sprite_tex.texture_rd_rid = out_texture
+
+# Use the texture....
+
+# After the resource is cleared, you may need to manually free the texture.
+# It won't be cleared manually, because we created it directly ourselves.
+# Wait at least 1 frame after it is not used.
+await get_tree().process_frame
+rd.free_rid(out_texture)
 ```
 
 ### How this works
@@ -108,6 +116,12 @@ var sprite_tex = Texture2DRD.new()
 sprite_tex.texture_rd_rid = out_texture
 ```
 Now we have the texture copied, but it's only stored at the low level. We need a way to use this with everyday Godot things like Sprites. Luckily, in 4.2 `Texture2DRD` was added. This allows us to map a texture created on the RenderingDevice and link it with a normal texture that we can use in Materials and the like.
+
+```gdscript
+await get_tree().process_frame
+rd.free_rid(out_texture)
+```
+After using the texture and we are done with it, we need to clean it up manually otherwise Godot will keep the texture in the GPU and the memory will slowly fill until your GPU dies. Waiting a frame stops currently in use objects (who might be visible currently but will disappear in the next frame) not 'flicker' because they lost their texture, since `free_rid` happens immediately.
 
 ### The results
 
